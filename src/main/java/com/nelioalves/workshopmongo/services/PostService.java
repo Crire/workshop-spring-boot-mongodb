@@ -26,4 +26,8 @@ public class PostService {
         }
         return post.orElse(null);
     }
+
+    public List<Post> findByTitle(String text){
+        return repo.findByTitleContaining(text);
+    }
 }
