@@ -1,6 +1,7 @@
 package com.nelioalves.workshopmongo.resources;
 
 
+import com.nelioalves.workshopmongo.domain.Post;
 import com.nelioalves.workshopmongo.domain.User;
 import com.nelioalves.workshopmongo.dto.UserDTO;
 import com.nelioalves.workshopmongo.services.UserService;
@@ -31,7 +32,7 @@ public class UserResource {
         List<UserDTO> listDto = list.stream().map(x -> new UserDTO(x)).collect(Collectors.toList());
         return ResponseEntity.ok().body(listDto);
         //Vai retornar um ResponseEntity do tipo , e estamos usando
-        //o metodo ok(), que vai instanciar o objeto ResponseEntity
+        //o metosdo ok(), que vai instanciar o objeto ResponseEntity
         //ja com o codigo de resposta http de forma que a resposta
         //ja venha com sucesso, e estamos usando o .body() para colocar
         //a nossa lista no corpo da resposta
@@ -51,17 +52,23 @@ public class UserResource {
         return ResponseEntity.created(uri).build();
     }
 
-    @RequestMapping(value="{id}",method= RequestMethod.DELETE)
+    @RequestMapping(value="/{id}",method= RequestMethod.DELETE)
     public ResponseEntity<Void> delete(@PathVariable String id){
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
 
-    @RequestMapping(value="{id}",method= RequestMethod.PUT)
+    @RequestMapping(value="/{id}",method= RequestMethod.PUT)
     public ResponseEntity<Void> update(@RequestBody UserDTO objDto, @PathVariable String id){
         User obj = service.fromDTO(objDto);
         obj.setId(id);
         obj = service.update(obj);
         return ResponseEntity.noContent().build();
+    }
+
+    @RequestMapping(value= "/{id}/posts",method= RequestMethod.GET)
+    public ResponseEntity<List<Post>> findPosts(@PathVariable String id){
+        User obj = service.findById(id);
+        return ResponseEntity.ok().body(obj.getPosts());
     }
 }
